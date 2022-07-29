@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "*.tsx": "xml",
+        "*.ldtk": "json",
+        "*.ldtkl": "json",
+        "graphics.h": "c",
+        "graphics.c": "c",
+        "main.c": "c"
+    }
+}
