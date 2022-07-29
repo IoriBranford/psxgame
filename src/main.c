@@ -1,13 +1,13 @@
-#include "graphics.h"
+#include "draw.h"
 
 int main() {
-	graphics_setup();
+	draw_setup();
 	while (1) {
-		graphics_begin();
+		draw_begin();
 		for (int i = 16; i <= 160; i += 16) {
-			graphics_rect(i, i, 64, 64, i, i, 0);
+			draw_rect(i, i, 64, 64, i, i, 0);
 		}
-		graphics_end();
+		draw_end();
 	}
 	return 0;
 }

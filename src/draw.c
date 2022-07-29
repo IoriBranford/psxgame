@@ -15,8 +15,8 @@ u_long ot[2][OTLEN];    // Ordering table length
 char pribuff[2][32768]; // Primitive buffer
 char *nextpri;          // Next primitive pointer
 
-void graphics_setup() {
-    // Reset graphics
+void draw_setup() {
+    // Reset draw
     ResetGraph(0);
 
     // First buffer
@@ -34,11 +34,11 @@ void graphics_setup() {
     nextpri = pribuff[0];           // Set initial primitive pointer address
 }
 
-void graphics_begin() {
+void draw_begin() {
     ClearOTagR(ot[db], OTLEN);  // Clear ordering table
 }
 
-void graphics_rect(short x, short y, short w, short h, u_char r, u_char g, u_char b) {
+void draw_rect(short x, short y, short w, short h, u_char r, u_char g, u_char b) {
     TILE *tile = (TILE*)nextpri;      // Cast next primitive
 
     setTile(tile);              // Initialize the primitive (very important)
@@ -50,8 +50,8 @@ void graphics_rect(short x, short y, short w, short h, u_char r, u_char g, u_cha
     nextpri += sizeof(TILE);    // Advance the next primitive pointer
 }
 
-void graphics_end() {
-    DrawSync(0);                // Wait for any graphics processing to finish
+void draw_end() {
+    DrawSync(0);                // Wait for any draw processing to finish
     
     VSync(0);                   // Wait for vertical retrace
 
