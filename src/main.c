@@ -4,7 +4,9 @@ int main() {
 	graphics_setup();
 	while (1) {
 		graphics_begin();
-		graphics_rect(32, 32, 64, 64, 255, 255, 0);
+		for (int i = 16; i <= 160; i += 16) {
+			graphics_rect(i, i, 64, 64, i, i, 0);
+		}
 		graphics_end();
 	}
 	return 0;
