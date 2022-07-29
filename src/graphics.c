@@ -42,9 +42,9 @@ void graphics_rect(short x, short y, short w, short h, u_char r, u_char g, u_cha
     TILE *tile = (TILE*)nextpri;      // Cast next primitive
 
     setTile(tile);              // Initialize the primitive (very important)
-    setXY0(tile, 32, 32);       // Set primitive (x,y) position
-    setWH(tile, 64, 64);        // Set primitive size
-    setRGB0(tile, 255, 255, 0); // Set color yellow
+    setXY0(tile, x, y);       // Set primitive (x,y) position
+    setWH(tile, w, h);        // Set primitive size
+    setRGB0(tile, r, g, b); // Set color yellow
     addPrim(ot[db], tile);      // Add primitive to the ordering table
     
     nextpri += sizeof(TILE);    // Advance the next primitive pointer
