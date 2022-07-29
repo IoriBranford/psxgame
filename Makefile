@@ -6,6 +6,7 @@ SRCS = 	src/main.c \
 ../third_party/common/syscalls/printf.s \
 ../third_party/common/crt0/crt0.s \
 
+CPPFLAGS += -Wall
 CPPFLAGS += -Iinclude
 CPPFLAGS += -I../third_party/common
 CPPFLAGS += -I../third_party/psyq/include
