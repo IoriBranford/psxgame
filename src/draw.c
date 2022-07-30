@@ -1,8 +1,7 @@
-#include <sys/types.h>	// This provides typedefs needed by libgte.h and libgpu.h
-#include <stdio.h>	// Not necessary but include it anyway
+#include "draw.h"
+#include "image.h"
+
 #include <libetc.h>	// Includes some functions that controls the display
-#include <libgte.h>	// GTE header, not really used but libgpu.h depends on it
-#include <libgpu.h>	// GPU library header
 
 #define OTLEN 8         // Ordering table length (recommended to set as a define
                         // so it can be changed easily)
@@ -15,16 +14,21 @@ u_long ot[2][OTLEN];    // Ordering table length
 char pribuff[2][32768]; // Primitive buffer
 char *nextpri;          // Next primitive pointer
 
+u_char drawcolor[4];
+
 void draw_setup() {
     // Reset draw
     ResetGraph(0);
 
+    for (int i = 0; i < 4; ++i)
+        drawcolor[i] = 128;
+
     // First buffer
-    SetDefDispEnv(&disp[0], 0, 0, 320, 240);
-    SetDefDrawEnv(&draw[0], 0, 240, 320, 240);
+    SetDefDispEnv(&disp[0], 0, 0, 256, 224);
+    SetDefDrawEnv(&draw[0], 0, 240, 256, 224);
     // Second buffer
-    SetDefDispEnv(&disp[1], 0, 240, 320, 240);
-    SetDefDrawEnv(&draw[1], 0, 0, 320, 240);
+    SetDefDispEnv(&disp[1], 0, 240, 256, 224);
+    SetDefDrawEnv(&draw[1], 0, 0, 256, 224);
 
     draw[0].isbg = 1;               // Enable clear
     setRGB0(&draw[0], 63, 0, 127);  // Set clear color (dark purple)
@@ -38,16 +42,45 @@ void draw_begin() {
     ClearOTagR(ot[db], OTLEN);  // Clear ordering table
 }
 
-void draw_rect(short x, short y, short w, short h, u_char r, u_char g, u_char b) {
+void set_draw_color(u_char r, u_char g, u_char b) {
+    drawcolor[0] = r;
+    drawcolor[1] = g;
+    drawcolor[2] = b;
+}
+
+void draw_rect(short x, short y, short w, short h) {
     TILE *tile = (TILE*)nextpri;      // Cast next primitive
 
     setTile(tile);              // Initialize the primitive (very important)
     setXY0(tile, x, y);       // Set primitive (x,y) position
     setWH(tile, w, h);        // Set primitive size
-    setRGB0(tile, r, g, b); // Set color yellow
+    setRGB0(tile, drawcolor[0], drawcolor[1], drawcolor[2]); 
     addPrim(ot[db], tile);      // Add primitive to the ordering table
     
     nextpri += sizeof(TILE);    // Advance the next primitive pointer
+}
+
+void draw_sprite(short x, short y, short w, short h, TIM_IMAGE *image, u_char u, u_char v) {
+    SPRT *sprt = (SPRT *)nextpri;
+    setSprt(sprt);
+    setRGB0(sprt, drawcolor[0], drawcolor[1], drawcolor[2]);        
+    setXY0(sprt, x, y);
+    setUV0(sprt, u, v);
+    setWH(sprt, w, h);
+    if (is_indexed_image(image)) {
+        setClut(sprt, image->crect->x, image->crect->y);
+    }
+    addPrim(ot[db], sprt);
+    nextpri += sizeof(SPRT);
+}
+
+void set_draw_sprite_page(TIM_IMAGE *image) {
+    DR_TPAGE *tpage = (DR_TPAGE*)nextpri;
+    setDrawTPage(tpage, 0, 1,               
+        getTPage(image->mode&0x3, 0,            
+        image->prect->x, image->prect->y));
+    addPrim(ot[db], tpage);                 
+    nextpri += sizeof(DR_TPAGE);
 }
 
 void draw_end() {
