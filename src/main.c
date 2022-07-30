@@ -3,7 +3,7 @@
 
 int main() {
 	TIM_IMAGE *img_Jenny;
-	draw_setup();
+	draw_setup(0, 256, 240);
 	load_images();
 	img_Jenny = get_image(IMG_JENNY);
 	while (1) {

@@ -16,36 +16,40 @@ char *nextpri;          // Next primitive pointer
 
 u_char drawcolor[4];
 
-void draw_setup() {
+void draw_setup(int region, int w, int h) {
     // Reset draw
-    ResetGraph(0);
+    ResetGraph(region);
 
     for (int i = 0; i < 4; ++i)
         drawcolor[i] = 128;
 
     // First buffer
-    SetDefDispEnv(&disp[0], 0, 0, 256, 224);
-    SetDefDrawEnv(&draw[0], 0, 240, 256, 224);
+    SetDefDispEnv(&disp[0], 0, 0, w, h);
+    SetDefDrawEnv(&draw[0], 0, h, w, h);
     // Second buffer
-    SetDefDispEnv(&disp[1], 0, 240, 256, 224);
-    SetDefDrawEnv(&draw[1], 0, 0, 256, 224);
+    SetDefDispEnv(&disp[1], 0, h, w, h);
+    SetDefDrawEnv(&draw[1], 0, 0, w, h);
 
     draw[0].isbg = 1;               // Enable clear
-    setRGB0(&draw[0], 63, 0, 127);  // Set clear color (dark purple)
     draw[1].isbg = 1;
-    setRGB0(&draw[1], 63, 0, 127);
+    set_clear_color(128, 128, 128);
 
     nextpri = pribuff[0];           // Set initial primitive pointer address
 }
 
-void draw_begin() {
-    ClearOTagR(ot[db], OTLEN);  // Clear ordering table
+void set_clear_color(u_char r, u_char g, u_char b) {
+    setRGB0(&draw[0], r, g, b);  // Set clear color (dark purple)
+    setRGB0(&draw[1], r, g, b);
 }
 
 void set_draw_color(u_char r, u_char g, u_char b) {
     drawcolor[0] = r;
     drawcolor[1] = g;
     drawcolor[2] = b;
+}
+
+void draw_begin() {
+    ClearOTagR(ot[db], OTLEN);  // Clear ordering table
 }
 
 void draw_rect(short x, short y, short w, short h) {
