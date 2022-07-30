@@ -13,4 +13,6 @@ typedef enum IMGID {
 void load_images();
 TIM_IMAGE* get_image(IMGID id);
 
+#define is_indexed_image(image) (image->mode & 0x8)
+
 #endif

@@ -5,7 +5,7 @@ void load_image(u_long * tim, TIM_IMAGE * tparam){     // This part is from Lame
     ReadTIM(tparam);                                // This read the header of the TIM data and sets the corresponding members of the TIM_IMAGE structure
     LoadImage(tparam->prect, tparam->paddr);        // Transfer the data from memory to VRAM at position prect.x, prect.y
     DrawSync(0);                                    // Wait for the drawing to end
-    if (tparam->mode & 0x8){ // check 4th bit       // If 4th bit == 1, TIM has a CLUT
+    if (is_indexed_image(tparam)){ // check 4th bit       // If 4th bit == 1, TIM has a CLUT
         LoadImage(tparam->crect, tparam->caddr);    // Load it to VRAM at position crect.x, crect.y
         DrawSync(0);                                // Wait for drawing to end
     }
